@@ -25,27 +25,6 @@ class Api:
     def auth_url(self):
         return "{}/connect/{}".format(self.url, self.install_id)
 
-    def upload_url(self):
-        return "{}/api/asciicasts".format(self.url)
-
-    def upload_asciicast(self, path):
-        with open(path, 'rb') as f:
-            try:
-                status, headers, body = self.http_adapter.post(
-                    self.upload_url(),
-                    files={"asciicast": ("ascii.cast", f)},
-                    headers=self._headers(),
-                    username=self.user,
-                    password=self.install_id
-                )
-            except HTTPConnectionError as e:
-                raise APIError(str(e))
-
-        if status != 200 and status != 201:
-            self._handle_error(status, body)
-
-        return body, headers.get('Warning')
-
     def _headers(self):
         return {'User-Agent': self._user_agent()}
 
